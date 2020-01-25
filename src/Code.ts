@@ -49,7 +49,7 @@ function emojiChanged(event: string[]) {
     console.log(emoji_name)
     let message = `${NOTIFICATION_MESSAGE} :${emoji_name}: \`:${emoji_name}:\``
 
-    if (event['value'].startsWith('alias:')) {
+    if (event['value'].indexOf('alias:') === 0) {
       let origin_emoji = event['value'].replace(/^alias:/, '')
       message += ` (alias of \`:${origin_emoji}:\`)`
     }
