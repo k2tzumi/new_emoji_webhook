@@ -69,9 +69,10 @@ function doPost(e): TextOutput {
     }
   } catch (exception) {
     new JobBroker().enqueue(asyncLogging, { message: exception.message, stack: exception.stack });
+    throw exception;
   }
 
-  throw new Error("No performed handler");
+  throw new Error(`No performed handler, request: ${JSON.stringify(e)}`);
 }
 
 const NOTIFICATION_MESSAGE: string = properties.getProperty('NOTIFICATION_MESSAGE') || 'A new emoji is added'

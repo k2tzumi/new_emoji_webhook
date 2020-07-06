@@ -72,7 +72,7 @@ class JobBroker {
                     default:
                         ScriptApp.deleteTrigger(trigger);
                         this.deleteJob(trigger);
-                        console.info(`job clear. id: ${id}, handler: ${trigger.getHandlerFunction()}, status: ${state} created_at: ${created_at}, start_at: ${start_at}, end_at: ${end_at}`);
+                        console.info(`job clear. id: ${id}, handler: ${trigger.getHandlerFunction()}, status: ${state}, created_at: ${created_at}, start_at: ${start_at}, end_at: ${end_at}`);
                         break;
                 }
             } else {

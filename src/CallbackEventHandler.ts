@@ -23,7 +23,6 @@ class CallbackEventHandler extends SlackBaseHandler {
 
             switch (postData.type) {
                 case "url_verification":
-                    this.validateVerificationToken(postData.token);
                     return { performed: true, output: this.convertJSONOutput({ challenge: postData.challenge }) };
                 case "event_callback":
                     console.log({ message: "event_callback called.", data: postData });
