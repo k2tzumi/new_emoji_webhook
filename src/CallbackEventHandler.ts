@@ -1,4 +1,5 @@
 import { SlackBaseHandler } from "./SlackBaseHandler";
+import { BaseError } from "./BaseError";
 import { Slack } from "./slack/types/callback-events.d";
 
 type TextOutput = GoogleAppsScript.Content.TextOutput;
@@ -13,6 +14,13 @@ interface OuterEvent {
     authed_users: string[];
     event_id: string;
     event_time: number;
+}
+
+class DuplicateEventError extends BaseError {
+    constructor(outerEvent: OuterEvent) {
+        const { event, event_id, event_time } = outerEvent;
+        super(`event duplicate called. type: ${event.type}, event_id: ${event_id}, event_time: ${event_time}, event_ts: ${event.event_ts}`);
+    }
 }
 
 class CallbackEventHandler extends SlackBaseHandler {
@@ -41,7 +49,7 @@ class CallbackEventHandler extends SlackBaseHandler {
         this.validateVerificationToken(token);
 
         if (this.isHandleProceeded(event_id + event_time)) {
-            throw new Error(`event duplicate called. type: ${event.type}, event_id: ${event_id}, event_time: ${event_time} event_ts: ${event.event_ts}`);
+            throw new DuplicateEventError(outerEvent);
         }
 
         const listner: Function | null = this.getListener(event.type);
@@ -54,4 +62,4 @@ class CallbackEventHandler extends SlackBaseHandler {
     }
 }
 
-export { CallbackEventHandler }
+export { CallbackEventHandler, DuplicateEventError }

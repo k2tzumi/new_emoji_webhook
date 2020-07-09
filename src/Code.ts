@@ -3,6 +3,7 @@ import { JobBroker } from "./JobBroker"
 import { SlackWebhooks } from "./SlackWebhooks";
 import { CallbackEventHandler } from "./CallbackEventHandler";
 import { Slack } from "./slack/types/callback-events.d";
+import { DuplicateEventError } from "./CallbackEventHandler";
 
 type TextOutput = GoogleAppsScript.Content.TextOutput
 type HtmlOutput = GoogleAppsScript.HTML.HtmlOutput;
@@ -68,8 +69,12 @@ function doPost(e): TextOutput {
       return process.output;
     }
   } catch (exception) {
-    new JobBroker().enqueue(asyncLogging, { message: exception.message, stack: exception.stack });
-    throw exception;
+    if (exception instanceof DuplicateEventError) {
+      return ContentService.createTextOutput();
+    } else {
+      new JobBroker().enqueue(asyncLogging, { message: exception.message, stack: exception.stack });
+      throw exception;
+    }
   }
 
   throw new Error(`No performed handler, request: ${JSON.stringify(e)}`);
