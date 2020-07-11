@@ -1,19 +1,35 @@
 {
   "name": "new_emoji_webhook",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "private": true,
+  "main": "src/Code.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "lint": "tslint --fix src/*.ts"
   },
-  "keywords": [],
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/k2tzumi/new_emoji_webhook.git"
+  },
+  "author": "k2tzumi",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/k2tzumi/new_emoji_webhook/issues"
+  },
+  "homepage": "https://github.com/k2tzumi/new_emoji_webhook#readme",
   "devDependencies": {
     "@google/clasp": "^2.3.0",
-    "tslint": "^5.20.1"
+    "@types/jest": "^26.0.3",
+    "jest": "^26.1.0",
+    "prettier": "^1.19.1",
+    "ts-jest": "^26.1.1",
+    "tslint": "^6.1.2",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-plugin-prettier": "^2.3.0"
   },
   "dependencies": {
-    "@types/google-apps-script": "^1.0.10"
+    "@types/google-apps-script": "^1.0.14",
+    "apps-script-oauth2": "github:gsuitedevs/apps-script-oauth2"
   }
 }

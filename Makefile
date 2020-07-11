@@ -7,6 +7,9 @@ help:
 .clasp.json:
 	make login
 	clasp create --title new_emoji_webhook --type webapp --rootDir ./src
+	clasp setting fileExtension ts
+	# clasp setting filePushOrder
+	sed -i -e 's/}/,"filePushOrder":["src\/OAuth2Handler.ts","src\/SlackBaseHandler.ts","src\/BaseError.ts"]}/' .clasp.json
 
 .PHONY: login
 login: ## Google login
@@ -28,7 +31,22 @@ open: ## Open Google apps scripts
 open: .clasp.json
 	clasp open
 
+.PHONY: application
+application: ## Open web application
+application: .clasp.json
+	clasp open --webapp
+
 .PHONY: pull
 pull: ## Pull Google apps scripts
 pull: .clasp.json
 	clasp pull
+
+.PHONY: lint
+lint: ## Run tslint
+lint:
+	tslint --fix src/*.ts
+
+.PHONY: undeploy
+undeploy: ## all undeploy Google apps scripts
+undeploy:
+	clasp undeploy --all
