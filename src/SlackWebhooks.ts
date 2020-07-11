@@ -4,52 +4,58 @@ type URLFetchRequestOptions = GoogleAppsScript.URL_Fetch.URLFetchRequestOptions;
 type HTTPResponse = GoogleAppsScript.URL_Fetch.HTTPResponse;
 
 class SlackWebhooks {
+  public constructor(private incomingWebhookUrl: string) {}
 
-    public constructor(private incomingWebhookUrl: string) {
+  public invoke(message: string, thread_ts: string = null): boolean {
+    let payload: {} = {
+      text: message
+    };
+    if (thread_ts) {
+      payload = { ...payload, thread_ts };
     }
 
-    public invoke(message: string, thread_ts: string = null): boolean {
-        let payload: {} = {
-            text: message
-        };
-        if (thread_ts) {
-            payload = { ...payload, thread_ts: thread_ts };
-        }
+    let response: HTTPResponse;
 
-        let response: HTTPResponse;
-
-        try {
-            response = UrlFetchApp.fetch(this.incomingWebhookUrl, this.requestOptions(payload));
-        } catch (e) {
-            console.warn(`DNS error, etc. ${e.message}`);
-            throw new NetworkAccessError(500, e.message);
-        }
-
-        switch (response.getResponseCode()) {
-            case 200:
-                return response.getContentText() === 'ok';
-            default:
-                console.warn(`Incoming Webhook error. status: ${response.getResponseCode()}, content: ${response.getContentText()}`);
-                throw new NetworkAccessError(response.getResponseCode(), response.getContentText());
-        }
+    try {
+      response = UrlFetchApp.fetch(
+        this.incomingWebhookUrl,
+        this.requestOptions(payload)
+      );
+    } catch (e) {
+      console.warn(`DNS error, etc. ${e.message}`);
+      throw new NetworkAccessError(500, e.message);
     }
 
-    private requestOptions(payload: string | {}): URLFetchRequestOptions {
-        const options: URLFetchRequestOptions = {
-            method: 'post',
-            headers: this.requestHeader(),
-            muteHttpExceptions: true,
-            payload: (payload instanceof String) ? payload : JSON.stringify(payload)
-        };
-
-        return options;
+    switch (response.getResponseCode()) {
+      case 200:
+        return response.getContentText() === "ok";
+      default:
+        console.warn(
+          `Incoming Webhook error. status: ${response.getResponseCode()}, content: ${response.getContentText()}`
+        );
+        throw new NetworkAccessError(
+          response.getResponseCode(),
+          response.getContentText()
+        );
     }
+  }
 
-    private requestHeader() {
-        return {
-            'content-type': 'application/json; charset=UTF-8'
-        }
-    }
+  private requestOptions(payload: string | {}): URLFetchRequestOptions {
+    const options: URLFetchRequestOptions = {
+      headers: this.requestHeader(),
+      method: "post",
+      muteHttpExceptions: true,
+      payload: payload instanceof String ? payload : JSON.stringify(payload)
+    };
+
+    return options;
+  }
+
+  private requestHeader() {
+    return {
+      "content-type": "application/json; charset=UTF-8"
+    };
+  }
 }
 
-export { SlackWebhooks }
+export { SlackWebhooks };
